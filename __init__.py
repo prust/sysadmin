@@ -39,7 +39,7 @@ def load_json_file(path):
 
 def save_json_file(obj, path):
     with open(path, 'w') as json_file:
-        json.dump(obj, json_file)
+        json.dump(obj, json_file, sort_keys=True, indent=4)
 
 
 # Interactive Prompts
