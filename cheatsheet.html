@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Python SysAdmin Cheat-Sheet</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+    <script src="js/sprintf-0.7-beta1.js"></script>
+    <style>
+      body {
+        font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+        font-size: 12pt;
+        line-height: 150%;
+        color: #252519;
+        margin: 0 10px;
+      }
+      a { color: #252519 !important; text-decoration: none }
+      a:hover { color: #c00 !important }
+      h1 { margin: 25px 0 15px 0 }
+      pre {
+        border: 1px solid #ccc;
+        padding-left: 10px;
+        background-color: #eee;
+        font-size: 10pt
+      }
+      .panel {
+        float: left;
+        width: 30em;
+        padding: 10px
+      }
+      .version { color: green }
+    </style>
+    <script>
+      $(document).ready(function() {
+        $('.method').each(function (i, method_elem) {
+          method_elem = $(method_elem);
+          var meth = parseMethod(method_elem.html());
+          var template = '%(package)s.<b>%(method)s</b>(<i>%(args)s</i>)';
+          var url, html = '';
+          if (meth.package != 'sysadmin')
+            url = 'http://docs.python.org/library/' + meth.package + '.html#' + meth.package + '.' + meth.method
+          if (url)
+            html += '<a href="' + url + '">';
+          html += sprintf(template, meth);
+          if (url)
+            html += '</a>';
+          method_elem.html(html);
+        });
+      });
+      function parseMethod(str) {
+        var parts = str.split('(');
+        if (parts.length < 2)
+          throw new Error('Unable to parse method "' + str + '" because it lacks parentheses');
+        var dot_parts = parts[0].split('.');
+        
+        return {
+          'package': dot_parts.slice(0, -1).join('.'),
+          'method': dot_parts[dot_parts.length - 1],
+          'args': parts[1].replace(')', '')
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <div class="panel">
+      <h1>Files &amp; Folders</h1>
+      <div class="method">os.getcwd()</div>
+      <div class="method">os.chdir(path)</div>
+      <div class="method">os.listdir(path)</div>
+      <div class="method">os.makedirs(path)</div>
+      <div>
+        <span class="method">os.walk(top)</span>
+        <pre>
+for dirpath, dirnames, filenames in os.walk('my_folder'):
+    # iterate directories
+    for dirname in dirnames:
+        print os.path.join(dirpath, dirname)
+</pre>
+      </div>
+      <div class="method">os.path.exists(path)</div>
+      <div class="method">os.path.join(path1[, path2[, ...]])</div>
+      
+      <div class="method">shutil.copy(src, dst)</div>
+      <div class="method">shutil.copytree(src, dst)</div>
+      <div class="method">shutil.rmtree(path)</div>
+      <h1>Zip</h1>
+      <div>
+        <span class="method">shutil.make_archive(base_name, format[, root_dir])</span>
+        <span class="version">2.7+ / 3.2+</span>
+      </div>
+      <div>
+        <span class="method">shutil.unpack_archive(filename[, extract_dir])</span>
+        <span class="version">3.2+</span>
+      </div>
+    </div>
+    <div class="panel">
+      <h1>FTP</h1>
+      <span class="version">FTPS (secure=True) requires 2.7+</span>
+      <div class="method">sysadmin.ftp_file_down(domain, remote_path, local_path[, secure])</div>
+      <div class="method">sysadmin.ftp_files_down(domain, remote_paths, local_paths[, secure])</div>
+      <div class="method">sysadmin.ftp_file_up(domain, remote_path, local_path[, secure])</div>
+      <div class="method">sysadmin.ftp_files_up(domain, remote_paths, local_paths[, secure])</div>
+      
+      <h1>JSON</h1>
+      <div>
+        <span class="method">sysadmin.load_json_file(path)</span>
+        <span class="version">2.6+</span>
+      </div>
+      <div>
+        <span class="method">sysadmin.save_json_file(obj, path)</span>
+        <span class="version">2.6+</span>
+      </div>
+      
+      <h1>Interactive Prompts</h1>
+      <div class="method">sysadmin.prompt(msg[, default])</div>
+      <div class="method">sysadmin.prompt_bool(msg[, default])</div>
+      <div class="method">sysadmin.prompt_usr([default])</div>
+      <div class="method">sysadmin.prompt_pw()</div>
+    </div>
+  </body>
+</html>
